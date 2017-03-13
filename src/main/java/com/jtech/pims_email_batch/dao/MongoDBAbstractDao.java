@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -58,15 +59,18 @@ public class MongoDBAbstractDao implements MongoDBDao {
 		while (iterator.hasNext()) {
 			entry = (Entry) iterator.next();
 			keyName = String.valueOf(entry.getKey());
-
-			if ("M".equals(returnInstanceOfTarget(params.get(keyName)))) {
+			
+			if (params.get(keyName) instanceof Map) {
 				basicDBObject.put(keyName, objParameterPaser((Map<?, ?>) params.get(keyName)));
 
-			} else if ("L".equals(returnInstanceOfTarget(params.get(keyName)))) {
+			} else if (params.get(keyName) instanceof List) {
 				basicDBObject.put(keyName, listParameterPaser((List<?>) params.get(keyName)));
 
-			} else if ("S".equals(returnInstanceOfTarget(params.get(keyName)))) {
+			} else if (params.get(keyName) instanceof String) {
 				basicDBObject.put(keyName, String.valueOf(params.get(keyName)));
+
+			} else if (params.get(keyName) instanceof ObjectId) {
+				basicDBObject.put(keyName, new ObjectId(String.valueOf(params.get(keyName))));
 
 			} else {
 				basicDBObject.put(keyName, params.get(keyName));
@@ -76,21 +80,6 @@ public class MongoDBAbstractDao implements MongoDBDao {
 		}
 
 		return basicDBObject;
-	}
-
-	public String returnInstanceOfTarget(Object obj) {
-		if (obj instanceof Map) {
-			return "M";
-		} else if (obj instanceof List) {
-			return "L";
-		} else if (obj instanceof String) {
-			return "S";
-		} else if (obj instanceof Boolean) {
-			return "B";
-
-		} else {
-			return "E";
-		}
 	}
 
 	@Override

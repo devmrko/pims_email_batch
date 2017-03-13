@@ -1,6 +1,7 @@
 package com.jtech.pims_email_batch.util;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,4 +27,29 @@ public class DatetimeUtil {
 		}
 		return false;
 	}
+
+	public static String returnStrDateFromDate(Calendar calendar) {
+		int year = calendar.get(Calendar.YEAR); // 2012
+		int month = calendar.get(Calendar.MONTH) + 1; // 9 - October!!!
+		int day = calendar.get(Calendar.DAY_OF_MONTH); // 5
+
+		StringBuffer dateOfTodayStr = new StringBuffer();
+		dateOfTodayStr.append(String.valueOf(year));
+		dateOfTodayStr.append("-");
+		dateOfTodayStr.append(String.format("%02d", month));
+		dateOfTodayStr.append("-");
+		dateOfTodayStr.append(String.format("%02d", day));
+
+		return dateOfTodayStr.toString();
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			double d = Double.parseDouble(str);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+
 }
